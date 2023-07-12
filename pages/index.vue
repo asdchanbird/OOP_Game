@@ -1,13 +1,11 @@
 <script setup lang="ts">
 declare var document: any;
 declare var $: any;
-import { useAddCount } from '../composables/useAddCount';
 import { useStorage } from '@vueuse/core'
 import { ref } from 'vue'
 import { useDraggable } from '@vueuse/core'
 import { json } from 'stream/consumers';
 const point = ref(100);
-const  { count } = useAddCount()
 useHead({
     title: '首頁',
     meta: [

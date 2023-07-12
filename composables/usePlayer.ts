@@ -1,5 +1,5 @@
 import { Monster } from './useMonster'
-import setting from "../content/setting.json";
+import MonsterSetting from "../content/MonsterSetting.json";
 import { Console } from 'console';
 import { MessageType } from '../composables/useNormal'
 let monsterContanier = <Monster[]>([]);
@@ -13,82 +13,86 @@ export class Player {
     public Heart = ref<number>(0);
     public armor = ref<number>(0);
     public Select = ref<number>(0);
-    constructor(damage: number, heart: number, armor: number) {
+    public DeathOrLive = ref<boolean>(false);
+    constructor(damage: number, heart: number, armor: number, enermy: Monster[]) {
         this.Damage.value = damage
         this.Heart.value = heart
-        this.armor.value = armor        
+        this.armor.value = armor      
         this.watch()
+        // this.hehe()
+        enermy.forEach((item, index)=> {
+            item.receiveMessage(MessageType.enermy, enermy)
+        })
     }
     attack(monsterContanier: Monster[]): void {
-        console.log(this.Damage.value)
-        // mon
-        if (this.armor.value >= 0) {
-            if (monsterContanier[this.Select.value].armor.value < this.Damage.value) {
-                let decreament = this.Damage.value - monsterContanier[this.Select.value].armor.value
-                monsterContanier[this.Select.value].armor.value = 0
-                monsterContanier[this.Select.value].Heart.value -=  decreament
-            }else {
-                monsterContanier[this.Select.value].armor.value -= this.Damage.value
+        console.log(this.DeathOrLive.value)
+        
+        if (!this.DeathOrLive.value) {
+            let index: string | null = sessionStorage.getItem('Select')
+            if (index !== null) {
+                console.log(this.Damage.value)
+                monsterContanier[parseInt(index)].receiveMessage(MessageType.attack, this.Damage.value)
             }
         }else {
-            monsterContanier[this.Select.value].Heart.value -= this.Damage.value
+            console.log('角色死亡')
         }
-        console.log('進攻')
-        console.log(monsterContanier)
+    }
+    injure(data: number): void {
+        let Img = document.querySelector('.playerImg')
+        setTimeout(()=> {
+            $(Img).addClass('beAttack')
+            if (this.armor.value >= 0) {
+                if ( this.armor.value < data ) {
+                    let decreament = data - this.armor.value
+                    this.armor.value = 0
+                    this.Heart.value -= decreament
+                }else {
+                    this.armor.value -= data
+                }
+            }else {
+                this.Heart.value -= data
+            }
+    
+        },1000)
+        setTimeout(()=> {
+            $(Img).removeClass('beAttack')
+        },500)
     }
     offense(): void {
         console.log('防禦')
     }
-    select(e: Event, index: number, monsterContanier: Monster[]): void {
-        let obj: string | null =  sessionStorage.getItem('Select')
-        // let obj = parseInt(JSON.stringify(sessionStorage.getItem('Select')))
-        console.log(obj)
-        if (obj !== null) {
-            if ( index !== parseInt(obj)) {
-                console.log(monsterContanier)
-                monsterContanier[index].Focus.value = '攻擊對象'
-                monsterContanier[parseInt(obj)].Focus.value = ''
-                sessionStorage.setItem('Select', String(index))
-            }else {
-                sessionStorage.setItem('Select', String(index))
-            }
-        }
-        if (obj !== null) {
-            if (obj !== String(index) ) {
-                $(e.target).addClass('select')
-                if (!$(e.target).hasClass('select')) {
-                }else {
-                    $(e.target).removeClass('select')
-                }
-            }
-            sessionStorage.setItem('Select', String(index))
-        }else {
-            $(e.target).addClass('select')
-            sessionStorage.setItem('Select', String(index))
-        }
-        this.Select.value = index
+    select(): void {
     }
     receiveMessage(type: string, data?: string | number | object): void {
         switch(type) {
             case MessageType.attack :
-                // this.attack();
+                if (typeof data === 'number') {
+                    this.injure(data)
+                }
                 break;
             case MessageType.offense :
                 this.offense();
                 break;
             case MessageType.select :
-                // this.select();
                 break;
         }
     }
     watch():void {
         watch(this.Heart, () => {
             // console.log(Monster.Heart.value)
-            console.log('變動')
             if (this.Heart.value <= 0) {
+                console.log('變動')
+                this.DeathOrLive.value = true
                 // death.value = 'true'   
                 // $('.death').removeClass('opacity-0')
             }
         })
     }
+    // hehe(): void {
+    //     let n = 1
+    //     setInterval(()=> {
+
+    //         console.log(n += 1)
+    //     },1000)
+    // }
 }
