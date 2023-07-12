@@ -6,22 +6,16 @@ import { MessageType, itemType, GetMessage, SentMessage, BasicAction, MessageInf
 import { Console } from '../composables/useMain'
 import { Monster } from "../composables/useMonster2";
 import { Player } from "../composables/usePlayer2";
-import { BasicAttack } from '../composables/attack'
-import { Messagess } from "../composables/message";
+
 // 類別 - Player
 class Player1 extends Player {
     constructor(heart: number, armor: number, damage: number, offense: number) {
         super(heart, armor, damage, offense)
         // Bit.attack(MonsterGroup[0])
     }
-    SentMessage(message: string, data?: any): void {
-        
+    SentMessage(message: Message): void {
         super.SentMessage(message)
-        const Text: Message = {
-            role: this.Name.value,
-            message: message
-        }
-        Main.GetMessage(Text)
+        Main.GetMessage(this.MessageType)
     }
 }
 // 類別 - Monster
@@ -29,11 +23,12 @@ class MonsterItem extends Monster {
     constructor(heart: number, armor: number, damage: number, offense: number) {
         super(heart, armor, damage, offense)
     }
+    SentMessage(message: Message): void {
+        super.SentMessage(message)
+        Main.GetMessage(message)
+    }
 }
 
-// 物件 - 攻擊物件
-let Bit = new BasicAttack(PlayerSetting.damage)
-let HEHE = new Messagess('Player', 'Attack')
 // 變數 - Monster物件群體
 let MonsterGroup = <Monster[]>([]);
 // 物件 - 建立怪物物件放進MonsterGroup陣列中
@@ -47,38 +42,28 @@ const Person = new Player1(PlayerSetting.heart, PlayerSetting.armor, PlayerSetti
 const Main = new Console(Person, MonsterGroup);
 
 
-let itemRefs: itemType[] = [];
-const setItemRefs = (el: HTMLElement | ComponentPublicInstance | null, item: number) => {
-    if (el) {
-        itemRefs.push({
-            id: item,
-            select: false,
-            el,
-        })
-    }
-}
 </script>
 <template>
     <div class="w-full h-full">
         <GameBg />
-        <div class="text-center font-bold text-4xl p-6">{{ `第${Main.Round.value}回合` }}</div>
+        <div class="text-center font-bold text-4xl p-6">{{ `第${Main.Round.value}回合 ` }} {{ Main.CheckEvenOrOdd() === 'Monster' ? '怪物回合' : Person.Second.value / 1000 }}</div>
         <div class="flex w-full justify-center items-center">
             <div class="w-1/3 relative">
                 <div class="p-2">
                     <h2 class="font-bold text-center">{{ PlayerSetting.name }}</h2>
                 </div>
                 <div class="flex justify-center height playerImg">
-                    <img class="object-contain" src="/assets/images/main.png" alt="">
+                    <img class="object-contain playerImg" src="/assets/images/main.png" alt="">
                 </div>
                 <div class="p-4 text-center">
                     <p class="font-bold text-lg ">生命值 : {{ Person.Heart.value >= 0 ? Person.Heart.value : 0 }} / {{ PlayerSetting.heart }}</p>
                     <p class="font-bold text-lg ">護甲值 : {{ Person.Armor.value >= 0 ? Person.Armor.value : 0 }} / {{ PlayerSetting.armor }}</p>
                 </div>
                 <div class="flex flex-row justify-center">
-                    <button class="border-solid bg-red-400 p-3 rounded-md mx-4 text-lg font-bold text-white"
-                    @click="HEHE.Sent(Main, {role: 'Player', message: 'Attack'})" :disabled="Person.BtnDisabled.value">attack</button>
-                    <button class="border-solid bg-blue-400 p-3 rounded-md text-lg font-bold text-white"
-                    @click="Person.SentMessage(SentMessage.Offense)" :disabled="Person.BtnDisabled.value">offense</button>
+                    <button class="border-solid bg-red-400 p-3 rounded-md mx-4 text-lg font-bold text-white duration-300 hover:bg-red-500"
+                    @click="Person.SentMessage({role: Person.Name.value, message: SentMessage.Attack})" :disabled="Person.BtnDisabled.value">attack</button>
+                    <button class="border-solid duration-300 bg-blue-400 p-3 rounded-md text-lg font-bold text-white hover:bg-blue-500"
+                    @click="Person.SentMessage({role:Person.Name.value, message: SentMessage.Offense })" :disabled="Person.BtnDisabled.value">offense</button>
                 </div>
                 <div class="absolute bg-red-500 top-1/2 left-1/3 p-4 rounded-lg" v-if="Person.Heart.value <= 0">
                     <h2 class="font-bold text-2xl text-white">已死亡</h2>
@@ -88,16 +73,14 @@ const setItemRefs = (el: HTMLElement | ComponentPublicInstance | null, item: num
                 <h2 class="">vs</h2>
             </div>
             <div class="w-1/3 flex">
-                <div v-for="(item, index) in MonsterSetting" :key="item.name" class="relative"
-                    :ref="(el: any) => setItemRefs(el, index)">
-                    <div class="font-bold text-center cursor-pointer"
-                        >
+                <div v-for="(item, index) in MonsterSetting" :key="item.name" class="relative">
+                    <div class="font-bold text-center cursor-pointer">
                         <div class="attackItem">
                             <h3></h3>
                         </div>
                         <h2 class="">{{ item.name }}</h2>
                     </div>
-                    <div class="flex justify-center height monsterImg">
+                    <div class="flex justify-center height monsterImg cursor-pointer" @click="Main.SelectMonster(index)">
                         <img class="object-contain" src="/assets/images/monster.png" alt="" ref="monsterImg">
                     </div>
                     <div class="text-center">
@@ -127,6 +110,7 @@ const setItemRefs = (el: HTMLElement | ComponentPublicInstance | null, item: num
 .attackItem {
     height: 30px;
     color: red;
+    font-weight: bold;
 }
 
 .beAttack {
@@ -139,15 +123,15 @@ const setItemRefs = (el: HTMLElement | ComponentPublicInstance | null, item: num
     }
 
     25% {
-        transform: translateX(5px)
+        transform: translateX(20px)
     }
 
     50% {
-        transform: translateX(-5px)
+        transform: translateX(-20px)
     }
 
     75% {
-        transform: translateX(5px)
+        transform: translateX(20px)
     }
 
     100% {

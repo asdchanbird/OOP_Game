@@ -1,6 +1,5 @@
 let monsterContanier = <Monster[]>([]);
 import { MessageType } from '../composables/useNormal'
-import { Player} from '../composables/usePlayer'
 import { onMounted } from 'vue';
 export class Monster {
     public Damage = ref<number>(0);

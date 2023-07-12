@@ -3,14 +3,14 @@
         "name": "Monster1",
         "heart": 100,
         "armor": 40,
-        "damage": 40,
+        "damage": 25,
         "offense": 40
     },
     {
         "name": "Monster2",
         "heart": 100,
         "armor": 30,
-        "damage": 40,
+        "damage": 30,
         "offense": 40
     }
 ]

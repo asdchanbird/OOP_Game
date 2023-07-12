@@ -16,10 +16,12 @@ export interface itemType {
 
 export enum GetMessage {
     EndRound = 'EndRound',
-    // Attack = 'Attack',
+    Attack = 'Attack',
     Offense = 'Offense',
     MyRound = 'MyRound',
     Injure = 'Injure',
+    FinishWork = 'FinishWork',
+    Death = 'Death',
 }
 export enum SentMessage {
     EndRound = 'EndRound',
@@ -28,6 +30,7 @@ export enum SentMessage {
     Offense = 'Offense',
     MyRound = 'MyRound',
     FinishWork = 'FinishWork',
+    Death = 'Death', 
 }
 
 export type BasicAction<T, U> = {

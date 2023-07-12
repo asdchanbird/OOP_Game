@@ -1,7 +1,7 @@
 {
-    "name": "勇者無懼",
+    "name": "勇者懼怕",
     "heart": 150,
     "armor": 44,
-    "damage": 40,
-    "offense": 40
+    "damage": 150,
+    "offense": 70
 }
