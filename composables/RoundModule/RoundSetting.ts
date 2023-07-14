@@ -1,33 +1,38 @@
 import { InjureAnimation, GetArmorAnimation, ChooseAnimation } from '../AniamtionModule/AnimaitonSet'
-import { Monster } from "../useMonster2";
-import { Player } from "../usePlayer2";
+import { CharactorAbility } from "../CharactorModule/BasicCharactor";
+import { MonsterAbility } from "../MonsterModule/BasicMonsters";
 import { TargetObject } from '../MessageModule/MessageChannel'
+import { totalmem } from 'os';
 export class RoundSystem {
-    public Player: Player;
-    public Monsters: any[]= ([]);
+    // 變數 - 玩家物件
+    public Player: CharactorAbility;
+    // 變數 - 怪物們物件
+    public Monsters: MonsterAbility[]= ([]);
+    // 變數 - 遊戲結束狀態
     public GameOver = <boolean>(false);
-    public Round = <number>(0);
+    // 變數 - 回合數
+    public Round = <number>(1);
+    // 變數 - 選擇怪物目標
     public Select = <number>(0);
-    public CurrentRound = <boolean>(false);
-    public AnimationInstance: ChooseAnimation;
     public targetValue: TargetObject;
-    constructor(player: Player, monsters: Monster[]) {
+    // 建構函數
+    constructor(player: CharactorAbility, monsters: MonsterAbility[]) {
         // 儲存玩家物件
         this.Player = player
         // 儲存怪物物件
         this.Monsters = monsters
-        // 建立動畫物件
-        this.AnimationInstance = new ChooseAnimation();
         // 建立訊息物件
         this.targetValue = new TargetObject();
     }
     // 回合開始
     async StartRound(): Promise<void> {
-
+        // 遊戲尚未結束
         if (!this.GameOver) {
+
             // 玩家回合
             if (this.CheckEvenOrOdd()) {
-                
+                // 玩家攻擊 - 怪物受傷
+                this.Monsters[this.Select].TakeDamage(this.Player.Damage.value, this.Monsters[this.Select])
                 // 倒數計時60s
 
                 // 事件監聽器啟動 (事件監聽是剣放在角色物件中)
@@ -38,7 +43,14 @@ export class RoundSystem {
                 this.NextRound()
             }else {
             // 怪物回合
-                
+                // 怪物攻擊 - 玩家受傷
+                let TotalDamage = <number>(0)
+                this.Monsters.forEach((item,index)=> {
+                    if (!item.DeathOrLive) {
+                        TotalDamage += item.Damage.value
+                    }
+                })
+                this.Player.TakeDamage(TotalDamage, this.Player)
                 // 自動攻擊
                 // 動畫
 
@@ -53,7 +65,7 @@ export class RoundSystem {
     }
     NextRound(): void {
         this.Round ++ 
-        this.StartRound()
+        // this.StartRound()
     }
     CountDown(): Promise<void> {
         return new Promise(()=> {

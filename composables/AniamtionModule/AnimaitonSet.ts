@@ -1,3 +1,4 @@
+import { AnimationEnum, AnimationType } from "../TypeSystem";
 interface AnimationBasic {
     Transform(target: HTMLElement): void;
 }
@@ -29,7 +30,14 @@ export class GetArmorAnimation implements AnimationBasic {
 export class ChooseAnimation {
     // type => 要使用的動畫類型
     // target => 動畫目標dom 
-    OutputInstance(type: AnimationBasic, target:HTMLElement ): void {
-        type.Transform(target)
+    OutputInstance(type: AnimationType, target:HTMLElement ): void {
+        switch (type) {
+            case AnimationEnum.GetArmorAnimation:
+                new GetArmorAnimation().Transform(target);
+            case AnimationEnum.InjureAnimation:
+                new InjureAnimation().Transform(target);
+
+
+        }
     }
 } 

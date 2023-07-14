@@ -1,9 +1,9 @@
 {
-    "name": "勇者懼怕",
-    "heart": 150,
-    "armor": 44,
-    "damage": 150,
-    "offense": 70,
-    "job": "Swordman",
-    "level": 1
+    "Name": "勇者懼怕",
+    "Job": "Swordman",
+    "Heart": 150,
+    "Armor": 44,
+    "Damage": 50,
+    "Offense": 70,
+    "Level": 1
 }

@@ -1,54 +1,74 @@
 import { Monster } from "composables/useMonster2";
-
-interface MonsterAbility {
-    Name: string;
-    Race: string;
-    Heart: number;
-    Armor: number;
-    Offense: number;
-    Damage: number;
-    DeathOrLive: boolean; 
+import { MonsterType } from '../AttackModule/InjureState'
+export interface MonsterAbility {
+    Name: Ref<string>;
+    Race: Ref<string>;
+    Heart: Ref<number>;
+    Armor: Ref<number>;
+    Offense: Ref<number>;
+    Damage: Ref<number>;
+    DeathOrLive: boolean;
+    InjureInstace: MonsterType;
+    TakeDamage(damage: number, instance: MonsterAbility): Promise<boolean>;
 }
 
 export class Monster1 implements MonsterAbility {
-    public Name: string;
-    public Race: string;
-    public Heart: number;
-    public Armor: number;
-    public Offense: number;
-    public Damage: number;
+    public Name = ref<string>('');
+    public Race = ref<string>('');
+    public Heart = ref<number>(0);
+    public Armor = ref<number>(0);
+    public Offense = ref<number>(0);
+    public Damage = ref<number>(0);
     public DeathOrLive = <boolean>(false);
+    public InjureInstace: MonsterType; 
     constructor(Name: string, Race: string,Heart: number,Armor: number, Offense: number, Damage: number){
-        this.Name = Name
-        this.Race = Race
-        this.Heart = Heart
-        this.Armor = Armor
-        this.Offense = Offense
-        this.Damage = Damage
+        this.Name.value = Name
+        this.Race.value = Race
+        this.Heart.value = Heart
+        this.Armor.value = Armor
+        this.Offense.value = Offense
+        this.Damage.value = Damage
+        // 建立玩家受傷物件
+        this.InjureInstace = new MonsterType;
+    }
+    async TakeDamage(damage: number, instance: MonsterAbility): Promise<boolean> {
+        // 回傳受傷結果 boolean
+        let result = await this.InjureInstace.TakeDamage(damage, instance)
+        // 回傳RoundSystem
+        return result
     }
 }
 export class Monster2 implements MonsterAbility {
-    public Name: string;
-    public Race: string;
-    public Heart: number;
-    public Armor: number;
-    public Offense: number;
-    public Damage: number;
+    public Name = ref<string>('');
+    public Race = ref<string>('');
+    public Heart = ref<number>(0);
+    public Armor = ref<number>(0);
+    public Offense = ref<number>(0);
+    public Damage = ref<number>(0);
     public DeathOrLive = <boolean>(false);
+    public InjureInstace: MonsterType; 
     constructor(Name: string, Race: string,Heart: number,Armor: number, Offense: number, Damage: number){
-        this.Name = Name
-        this.Race = Race
-        this.Heart = Heart
-        this.Armor = Armor
-        this.Offense = Offense
-        this.Damage = Damage
+        this.Name.value = Name
+        this.Race.value = Race
+        this.Heart.value = Heart
+        this.Armor.value = Armor
+        this.Offense.value = Offense
+        this.Damage.value = Damage
+        // 建立玩家受傷物件
+        this.InjureInstace = new MonsterType;
+    }
+    async TakeDamage(damage: number, instance: MonsterAbility): Promise<boolean> {
+        // 回傳受傷結果 boolean
+        let result = await this.InjureInstace.TakeDamage(damage, instance)
+        // 回傳RoundSystem
+        return result
     }
 }
 
-// 根據怪物等級回傳相對應的怪物等級物件物件
-export class ChooseRace {
-     ChooseRace(Name: string, Race: string,Heart: number,Armor: number, Offense: number, Damage: number): any {
-        if (Race === '123') {
+// 根據怪物等級回傳相對應的怪物等級物件物
+export class FilterMonster {
+    ChooseRace(Name: string, Race: string,Heart: number,Armor: number, Offense: number, Damage: number): any {
+        if (Race === '1') {
             return new Monster1(Name, Race, Heart, Armor, Offense, Damage) 
         }else {
             return new Monster2(Name, Race, Heart, Armor, Offense, Damage)
