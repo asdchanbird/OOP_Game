@@ -6,6 +6,7 @@ import { MessageType, itemType, GetMessage, SentMessage, BasicAction, MessageInf
 import { Console } from '../composables/useMain'
 import { Monster } from "../composables/useMonster2";
 import { Player } from "../composables/usePlayer2";
+import { ChooseAnimation, InjureAnimation, GetArmorAnimation } from "../composables/AniamtionModule/AnimaitonSet";
 
 // 類別 - Player
 class Player1 extends Player {
@@ -41,7 +42,14 @@ const Person = new Player1(PlayerSetting.heart, PlayerSetting.armor, PlayerSetti
 // 物件 - 主控台 (玩家物件, 怪物物件們)
 const Main = new Console(Person, MonsterGroup);
 
+onMounted(()=> {
+    let animation = new ChooseAnimation()
+    const result = document.querySelector('.playerImg') as HTMLElement
+    animation.OutputInstance(new InjureAnimation,result)
 
+    
+    
+})
 </script>
 <template>
     <div class="w-full h-full">
@@ -116,6 +124,9 @@ const Main = new Console(Person, MonsterGroup);
 .beAttack {
     animation: horizontal-shaking 0.5s;
 }
+.offense {
+     animation: vertical-shaking 0.5s;
+}
 
 @keyframes horizontal-shaking {
     0% {
@@ -137,4 +148,26 @@ const Main = new Console(Person, MonsterGroup);
     100% {
         transform: translateX(0)
     }
-}</style>
+}
+@keyframes vertical-shaking {
+    0% {
+        transform: translateY(0)
+    }
+
+    25% {
+        transform: translateY(20px)
+    }
+
+    50% {
+        transform: translateY(-20px)
+    }
+
+    75% {
+        transform: translateY(20px)
+    }
+
+    100% {
+        transform: translateX(0)
+    }
+}
+</style>

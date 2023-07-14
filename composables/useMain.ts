@@ -25,7 +25,7 @@ export class Console implements GetSentMessage {
     private MonsterAttack = <BasicAttack[]>([]);
     // 變數 - 訊息格式
     public MessageType!: Message;
-    // 變數 - 訊息格式
+    // 變數 - 使用次數
     public CanUse = ref<boolean>(true);
 
     // 建構函數 ( 變數 - 玩家物件 . 怪物們物件(陣列))
@@ -37,7 +37,6 @@ export class Console implements GetSentMessage {
             let NewObj = new BasicAttack(this.Monsters[i].Damage.value, this.Monsters[i].Offense.value)
             this.MonsterAttack.push(NewObj)
         }
-        
         const Type: Message = {
             role: 'Player',
             message: SentMessage.MyRound,
@@ -137,9 +136,11 @@ export class Console implements GetSentMessage {
             switch (message.message) {
                 case GetMessage.Attack:
                     if (this.CanUse.value) {
-                        this.Player.Animation(this.MonsterAttack.length) 
+                        this.Player.Animation(message.message) 
                         for(let i=0; i< this.MonsterAttack.length; i++) {
-                            this.MonsterAttack[i].attack(this.Player)
+                            if (!this.Monsters[i].DeathOrLive.value) {
+                                this.MonsterAttack[i].attack(this.Player)
+                            }
                         }
                         message.message = SentMessage.FinishWork
                         this.SentMessage(message)
@@ -198,4 +199,12 @@ export class Console implements GetSentMessage {
             return "Player"
         }
     }
+
+    // Watch(): any {
+    //     const result = computed(()=> {
+    //         // console.log(`測試測試${this.Monsters[0].Heart.value}`)
+    //         return this.Monsters[0].Heart.value
+    //     })
+    //     return result
+    // }
 }

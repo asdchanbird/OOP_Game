@@ -32,7 +32,7 @@ export class Player implements Chacracter {
         this.Heart.value = heart
         this.Armor.value = armor
         this.Offense.value = offense
-        
+        this.Watch()
         const Type: Message = {
             role: this.Name.value,
             message: ''
@@ -40,15 +40,24 @@ export class Player implements Chacracter {
         this.MessageType = Type
     }
 
-    Animation(time:number): void {
+    Animation(action: string): void {
         // 客戶端執行
         if (process.client) {
             let Img = document.querySelector('.playerImg')
-            $(Img).addClass('beAttack')
-
-            setTimeout(()=> {
-                $(Img).removeClass('beAttack')
-            },500)
+            if ( action === GetMessage.Attack ) {
+                $(Img).addClass('beAttack')
+    
+                setTimeout(()=> {
+                    $(Img).removeClass('beAttack')
+                },500)
+            }else if ( action === GetMessage.Offense ) {
+                console.log(123)
+                $(Img).addClass('offense')
+    
+                setTimeout(()=> {
+                    $(Img).removeClass('offense')
+                },500)
+            }
         }    
 
     }
@@ -89,6 +98,7 @@ export class Player implements Chacracter {
                 break;
             case SentMessage.Offense:
                 this.MessageType.message = SentMessage.Offense
+                this.Animation(SentMessage.Offense)
                 break;
             case SentMessage.FinishWork:
                 this.MessageType.message = SentMessage.FinishWork
@@ -113,5 +123,14 @@ export class Player implements Chacracter {
                 this.SentMessage(this.MessageType) 
                 break;
         }
+    }
+
+    Watch(): void {
+        watch(this.Heart, ()=> {
+            
+            if ( this.Heart.value <= 0 ) {
+                console.log('玩家已死亡 遊戲結束~~')
+            }
+        })
     }
 }

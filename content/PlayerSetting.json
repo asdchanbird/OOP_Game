@@ -3,5 +3,7 @@
     "heart": 150,
     "armor": 44,
     "damage": 150,
-    "offense": 70
+    "offense": 70,
+    "job": "Swordman",
+    "level": 1
 }

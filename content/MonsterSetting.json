@@ -1,16 +1,20 @@
 [
     {
         "name": "Monster1",
+        "Race": "123",
         "heart": 100,
         "armor": 40,
-        "damage": 25,
-        "offense": 40
+        "damage": 70,
+        "offense": 40,
+        "level": 1
     },
     {
         "name": "Monster2",
+        "Race": "123",
         "heart": 100,
         "armor": 30,
         "damage": 30,
-        "offense": 40
+        "offense": 40,
+        "level": 2
     }
 ]

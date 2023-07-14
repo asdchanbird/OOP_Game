@@ -31,6 +31,7 @@ export class Monster implements Chacracter {
     }
 
     Animation(index:number): void {
+        
         // 客戶端執行
         if (process.client) {
             setTimeout(()=> {
@@ -48,38 +49,43 @@ export class Monster implements Chacracter {
 
     // 行為 - 傳送訊息
     SentMessage(message: Message): void {
-        switch (message.message) {
-            // case SentMessage.MyRound:
-            //     break;
-            case SentMessage.Attack:
-                // console.log(message)
-                break;
-            case SentMessage.EndRound:
-                // console.log(123)
-                break;
-            case SentMessage.Death:
-                this.MessageType.message = SentMessage.Death
-                break;
-        }
+        // if (!this.DeathOrLive.value) {
+            switch (message.message) {
+                // case SentMessage.MyRound:
+                //     break;
+                case SentMessage.Attack:
+                    // console.log(message)
+                    break;
+                case SentMessage.EndRound:
+                    // console.log(123)
+                    break;
+                case SentMessage.Death:
+                    this.MessageType.message = SentMessage.Death
+                    break;
+            }
+        // }
 
     }
     // 行為 - 取得訊息
     GetMessage(message: Message): void {
-        console.log(message)
-        switch (message.message) {
-            case GetMessage.MyRound:
-                setTimeout(()=> {
-                    this.MessageType.message = SentMessage.Attack
+        // if (!this.DeathOrLive.value) {
+            console.log(message)
+            switch (message.message) {
+                case GetMessage.MyRound:
+                    setTimeout(()=> {
+                        this.MessageType.message = SentMessage.Attack
+                        this.SentMessage(this.MessageType)
+                    },2000)
+                    break;
+                case GetMessage.FinishWork:
+                    this.MessageType.message = SentMessage.EndRound
                     this.SentMessage(this.MessageType)
-                },2000)
-                break;
-            case GetMessage.FinishWork:
-                this.MessageType.message = SentMessage.EndRound
-                this.SentMessage(this.MessageType)
-                break;
-            case GetMessage.Offense:
-                break;
-        }
+                    break;
+                case GetMessage.Offense:
+                    break;
+            }
+        // }
+
     }
 
     Watch(): void {
