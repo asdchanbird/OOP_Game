@@ -1,8 +1,8 @@
 import { InjureAnimation, GetArmorAnimation, ChooseAnimation } from '../AniamtionModule/AnimaitonSet'
 import { CharactorAbility } from "../CharactorModule/BasicCharactor";
 import { MonsterAbility } from "../MonsterModule/BasicMonsters";
-import { TargetObject } from '../MessageModule/MessageChannel'
-import { totalmem } from 'os';
+import { CountDown } from "../CountDownModule/CountDown";
+import { OptionType } from '../TypeSystem'
 export class RoundSystem {
     // 變數 - 玩家物件
     public Player: CharactorAbility;
@@ -10,29 +10,53 @@ export class RoundSystem {
     public Monsters: MonsterAbility[]= ([]);
     // 變數 - 遊戲結束狀態
     public GameOver = <boolean>(false);
+    // 變數 - 遊戲結束狀態
+    public RoundOver = <boolean>(false);
     // 變數 - 回合數
-    public Round = <number>(1);
+    public Round = ref<number>(1);
     // 變數 - 選擇怪物目標
     public Select = <number>(0);
-    public targetValue: TargetObject;
+    // 變數 - 秒數
+    public Second = <number>(60000);
     // 建構函數
     constructor(player: CharactorAbility, monsters: MonsterAbility[]) {
         // 儲存玩家物件
         this.Player = player
         // 儲存怪物物件
         this.Monsters = monsters
-        // 建立訊息物件
-        this.targetValue = new TargetObject();
+        
+
+        onMounted(()=>{
+            this.SelectTarget(this.Select)
+        })
     }
     // 回合開始
     async StartRound(): Promise<void> {
         // 遊戲尚未結束
         if (!this.GameOver) {
-
+            console.log('玩家回合')
             // 玩家回合
             if (this.CheckEvenOrOdd()) {
                 // 玩家攻擊 - 怪物受傷
-                this.Monsters[this.Select].TakeDamage(this.Player.Damage.value, this.Monsters[this.Select])
+                
+                // 建立倒數計時物件並啟動函數計時
+                const result = await new CountDown().SetTimeOut(this.Second)
+                switch (result) {
+                    case 'TimeOut':
+                        console.log('時間到摟!')
+                        break;
+                    case 'Attack':
+                        console.log('攻擊摟!')
+                        this.Monsters[this.Select].TakeDamage(this.Player.Damage.value, this.Monsters[this.Select])
+                        break;
+                    case 'Offense':
+                        console.log('防禦瞜!')
+                        break;
+                    default:
+                        console.log('12412')
+                        break;
+                }
+
                 // 倒數計時60s
 
                 // 事件監聽器啟動 (事件監聽是剣放在角色物件中)
@@ -43,14 +67,17 @@ export class RoundSystem {
                 this.NextRound()
             }else {
             // 怪物回合
-                // 怪物攻擊 - 玩家受傷
-                let TotalDamage = <number>(0)
-                this.Monsters.forEach((item,index)=> {
-                    if (!item.DeathOrLive) {
-                        TotalDamage += item.Damage.value
-                    }
-                })
-                this.Player.TakeDamage(TotalDamage, this.Player)
+                console.log('怪物回合')
+                setTimeout(()=> {
+                    // 怪物攻擊 - 玩家受傷
+                    let TotalDamage = <number>(0)
+                    this.Monsters.forEach((item,index)=> {
+                        if (!item.DeathOrLive) {
+                            TotalDamage += item.Damage.value
+                        }
+                    })
+                    this.Player.TakeDamage(TotalDamage, this.Player)
+                },1000)
                 // 自動攻擊
                 // 動畫
 
@@ -64,24 +91,27 @@ export class RoundSystem {
         }
     }
     NextRound(): void {
-        this.Round ++ 
-        // this.StartRound()
+        setTimeout(()=>{
+            this.Round.value ++ 
+            this.StartRound()
+        }, 2000)
     }
-    CountDown(): Promise<void> {
-        return new Promise(()=> {
-            setTimeout(()=>{
-                console.log('倒數計時開始')
-            },2000)
+    // 行為 - 檢查基數偶數
+    SelectTarget(index: number): void {
+        this.Select = index
+        const Target = document.querySelectorAll('.attackItem')
+        Target.forEach((item,num)=> {
+            if ( num === index) {
+                $(item).html('攻擊目標')
+            }else {
+                $(item).html('')
+            }
         })
     }
-
-    MessageChannel():void {
-        this.targetValue.ProcessTarget(12412)
-    }
-     // 行為 - 檢查基數偶數
+    // 行為 - 檢查基數偶數
     CheckEvenOrOdd(): boolean{
         // 回合數為偶數
-        if ( this.Round % 2 === 0 ) {
+        if ( this.Round.value % 2 === 0 ) {
             return false
         // 回合數為奇數
         }else {

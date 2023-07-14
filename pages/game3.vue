@@ -16,9 +16,9 @@ import { MonsterAbility } from "../composables/MonsterModule/BasicMonsters";
 let MonsterGroup = <MonsterAbility[]>([]);
 
 // 物件 - 建立怪物物件放進MonsterGroup陣列中
-MonsterSetting.forEach((item, index)=> {
+MonsterSetting.forEach((item, index: number)=> {
     let Choose = new FilterMonster()
-    let CreateMonster = Choose.ChooseRace(item.Name, item.Race, item.Heart, item.Armor, item.Offense, item.Damage)
+    let CreateMonster = Choose.ChooseRace(item.Name, item.Race, item.Heart, item.Armor, item.Offense, item.Damage, index)
     console.log(CreateMonster)
 
     MonsterGroup.push(CreateMonster)
@@ -38,7 +38,7 @@ onMounted(()=> {
 <template>
     <div class="w-full h-full">
         <GameBg />
-        <div class="text-center font-bold text-4xl p-6">{{ `第${RoundControl.Round}回合 ` }} {{ RoundControl.CheckEvenOrOdd() === false ? '怪物回合' : '' }}</div>
+        <div class="text-center font-bold text-4xl p-6">{{ `第${RoundControl.Round.value}回合 ` }} {{ RoundControl.CheckEvenOrOdd() === false ? '怪物回合' : '' }}</div>
         <div class="flex w-full justify-center items-center">
             <div class="w-1/3 relative">
                 <div class="p-2">
@@ -48,14 +48,14 @@ onMounted(()=> {
                     <img class="object-contain playerImg" src="/assets/images/main.png" alt="">
                 </div>
                 <div class="p-4 text-center">
-                    <p class="font-bold text-lg ">生命值 : {{ Person.Heart.value >= 0 ? Person.Heart : H }} / {{ PlayerSetting.Heart }}</p>
-                    <p class="font-bold text-lg ">護甲值 : {{ Person.Armor.value >= 0 ? Person.Armor : 0 }} / {{ PlayerSetting.Armor }}</p>
+                    <p class="font-bold text-lg ">生命值 : {{ Person.Heart.value >= 0 ? Person.Heart.value : 0 }} / {{ PlayerSetting.Heart }}</p>
+                    <p class="font-bold text-lg ">護甲值 : {{ Person.Armor.value >= 0 ? Person.Armor.value : 0 }} / {{ PlayerSetting.Armor }}</p>
                 </div>
                 <div class="flex flex-row justify-center">
-                    <button class="border-solid bg-red-400 p-3 rounded-md mx-4 text-lg font-bold text-white duration-300 hover:bg-red-500"
-                    @click="" >attack</button>
+                    <button class="border-solid bg-red-400 p-3 rounded-md mx-4 text-lg font-bold text-white duration-300 hover:bg-red-500" id="attack"
+                    @click="RoundControl.RoundOver = true" >attack</button>
                     <button class="border-solid duration-300 bg-blue-400 p-3 rounded-md text-lg font-bold text-white hover:bg-blue-500"
-                    @click="" >offense</button>
+                    @click="" id="offense">offense</button>
                 </div>
                 <div class="absolute bg-red-500 top-1/2 left-1/3 p-4 rounded-lg" v-if="Person.Heart.value <= 0">
                     <h2 class="font-bold text-2xl text-white">已死亡</h2>
@@ -72,7 +72,7 @@ onMounted(()=> {
                         </div>
                         <h2 class="">{{ item.Name }}</h2>
                     </div>  
-                    <div class="flex justify-center height monsterImg cursor-pointer" @click="Main.SelectMonster(index)">
+                    <div class="flex justify-center height monsterImg cursor-pointer" @click="RoundControl.SelectTarget(index)">
                         <img class="object-contain" src="/assets/images/monster.png" alt="" ref="monsterImg">
                     </div>
                     <div class="text-center">

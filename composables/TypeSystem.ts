@@ -9,5 +9,11 @@ export enum AnimationEnum {
     InjureAnimation = 'InjureAnimation'
 }
 
+// 倒數計時項目列舉
+export enum OptionType {
+    Attack = 'Attack',
+    Offense = 'Offense',
+    TimeOut = 'TimeOut',
+}
 
 

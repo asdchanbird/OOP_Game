@@ -1,12 +1,12 @@
 import { AnimationEnum, AnimationType } from "../TypeSystem";
 interface AnimationBasic {
-    Transform(target: HTMLElement): void;
+    Transform(target: any): void;
 }
 
 
 // 受到傷害動畫
 export class InjureAnimation implements AnimationBasic {
-    Transform(target: HTMLElement): void {
+    Transform(target: any): void {
         $(target).addClass('beAttack')
 
         setTimeout(()=> {
@@ -17,7 +17,7 @@ export class InjureAnimation implements AnimationBasic {
 
 // 提升防禦動畫
 export class GetArmorAnimation implements AnimationBasic {
-    Transform(target: HTMLElement): void {
+    Transform(target: any): void {
         $(target).addClass('offense')
         
         setTimeout(()=> {
@@ -30,7 +30,7 @@ export class GetArmorAnimation implements AnimationBasic {
 export class ChooseAnimation {
     // type => 要使用的動畫類型
     // target => 動畫目標dom 
-    OutputInstance(type: AnimationType, target:HTMLElement ): void {
+    OutputInstance(type: AnimationType, target:any ): void {
         switch (type) {
             case AnimationEnum.GetArmorAnimation:
                 new GetArmorAnimation().Transform(target);
