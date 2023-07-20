@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import  MonsterSetting from '../content/MonsterSetting.json'
-import PlayerSetting from "../content/PlayerSetting.json";
-import { MessageType, itemType, GetMessage, SentMessage, BasicAction, MessageInfo, Message, Chacracter  } from '../composables/useNormal'
-import { Console } from '../composables/useMain'
-import { ChooseAnimation, InjureAnimation, GetArmorAnimation } from "../composables/AniamtionModule/AnimaitonSet";
-
-
+import PlayerSetting from "../content/PlayerSetting.json";  
 import { Swordman, Archer } from "../composables/CharactorModule/BasicCharactor";
-import { FilterMonster, Monster1, Monster2 } from '../composables/MonsterModule/BasicMonsters'
+import { FilterMonster} from '../composables/MonsterModule/BasicMonsters'
 import { RoundSystem } from "../composables/RoundModule/RoundSetting";
 import { CharactorAbility } from "../composables/CharactorModule/BasicCharactor";
 import { MonsterAbility } from "../composables/MonsterModule/BasicMonsters";
@@ -25,11 +20,10 @@ MonsterSetting.forEach((item, index: number)=> {
 })
 // 物件 - 玩家
 const Person = new Swordman(PlayerSetting.Name, PlayerSetting.Job, PlayerSetting.Heart, PlayerSetting.Armor, PlayerSetting.Offense, PlayerSetting.Damage)
-// 物件 - 主控台 (玩家物件, 怪物物件們)
 
+// 物件 - 主控台 (玩家物件, 怪物物件們)
 const RoundControl = new RoundSystem(Person, MonsterGroup);
-console.log(RoundControl)
-console.log(Person)
+
 RoundControl.StartRound()
 onMounted(()=> {    
     

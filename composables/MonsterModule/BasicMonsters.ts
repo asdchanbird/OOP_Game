@@ -1,4 +1,3 @@
-import { Monster } from "composables/useMonster2";
 import { MonsterType } from '../AttackModule/InjureState';
 import { ChooseAnimation } from '../AniamtionModule/AnimaitonSet'
 import { AnimationEnum } from '../TypeSystem'

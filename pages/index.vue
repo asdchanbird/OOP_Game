@@ -118,8 +118,8 @@ console.log(sameCounter.value,124124)
         </ul>
         <div ref="el" :style="style" style="position: fixed" class="move">
             Drag me! I am at {{ x }}, {{ y }}
-        <Todo />
-      </div>
+             <Todo />
+        </div>
     </div>
 </template>
 
