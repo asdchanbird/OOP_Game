@@ -3,6 +3,7 @@ import { CharactorAbility } from "../CharactorModule/BasicCharactor";
 import { MonsterAbility } from "../MonsterModule/BasicMonsters";
 import { CountDown } from "../CountDownModule/CountDown";
 import { OptionType } from '../TypeSystem'
+import { clearInterval } from 'timers';
 export class RoundSystem {
     // 變數 - 玩家物件
     public Player: CharactorAbility;
@@ -10,14 +11,14 @@ export class RoundSystem {
     public Monsters: MonsterAbility[]= ([]);
     // 變數 - 遊戲結束狀態
     public GameOver = <boolean>(false);
-    // 變數 - 遊戲結束狀態
+    // 變數 - 回合狀態
     public RoundOver = <boolean>(false);
     // 變數 - 回合數
     public Round = ref<number>(1);
     // 變數 - 選擇怪物目標
     public Select = <number>(0);
     // 變數 - 秒數
-    public Second = <number>(60000);
+    public Second = ref<number>(60000);
     // 建構函數
     constructor(player: CharactorAbility, monsters: MonsterAbility[]) {
         // 儲存玩家物件
@@ -33,14 +34,15 @@ export class RoundSystem {
     // 回合開始
     async StartRound(): Promise<void> {
         // 遊戲尚未結束
-        if (!this.GameOver) {
+        console.log(this.RoundOver)
+        if (!this.GameOver && !this.RoundOver) {
             console.log('玩家回合')
             // 玩家回合
             if (this.CheckEvenOrOdd()) {
                 // 玩家攻擊 - 怪物受傷
                 
                 // 建立倒數計時物件並啟動函數計時
-                const result = await new CountDown().SetTimeOut(this.Second)
+                const result = await new CountDown().SetTimeOut(this.Second.value)
                 switch (result) {
                     case 'TimeOut':
                         console.log('時間到摟!')
@@ -56,7 +58,7 @@ export class RoundSystem {
                         console.log('12412')
                         break;
                 }
-
+                this.CheckDeathOrLive()
                 // 倒數計時60s
 
                 // 事件監聽器啟動 (事件監聽是剣放在角色物件中)
@@ -80,7 +82,7 @@ export class RoundSystem {
                 },1000)
                 // 自動攻擊
                 // 動畫
-
+                this.CheckDeathOrLive()
                 // 結束動作
 
                 // 下一回合
@@ -88,6 +90,8 @@ export class RoundSystem {
             }   
 
 
+        }else {
+            console.log('遊戲結束!!!!')
         }
     }
     NextRound(): void {
@@ -117,5 +121,17 @@ export class RoundSystem {
         }else {
             return true
         }
+    }
+
+    CheckDeathOrLive(): boolean {
+        let state = this.Monsters.every((item)=> {
+            return item.Heart.value <= 0
+        })
+
+        console.log(state,179147)
+        if (state === true) {
+            this.RoundOver = state
+        }
+        return state
     }
 } 

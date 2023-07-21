@@ -23,7 +23,6 @@ const Person = new Swordman(PlayerSetting.Name, PlayerSetting.Job, PlayerSetting
 
 // 物件 - 主控台 (玩家物件, 怪物物件們)
 const RoundControl = new RoundSystem(Person, MonsterGroup);
-
 RoundControl.StartRound()
 onMounted(()=> {    
     
@@ -32,7 +31,7 @@ onMounted(()=> {
 <template>
     <div class="w-full h-full">
         <GameBg />
-        <div class="text-center font-bold text-4xl p-6">{{ `第${RoundControl.Round.value}回合 ` }} {{ RoundControl.CheckEvenOrOdd() === false ? '怪物回合' : '' }}</div>
+        <div class="text-center font-bold text-4xl p-6">{{ `第${RoundControl.Round.value}回合 ` }} {{ RoundControl.CheckEvenOrOdd() === false ? '怪物回合' : '' }} </div>
         <div class="flex w-full justify-center items-center">
             <div class="w-1/3 relative">
                 <div class="p-2">
@@ -46,8 +45,7 @@ onMounted(()=> {
                     <p class="font-bold text-lg ">護甲值 : {{ Person.Armor.value >= 0 ? Person.Armor.value : 0 }} / {{ PlayerSetting.Armor }}</p>
                 </div>
                 <div class="flex flex-row justify-center">
-                    <button class="border-solid bg-red-400 p-3 rounded-md mx-4 text-lg font-bold text-white duration-300 hover:bg-red-500" id="attack"
-                    @click="RoundControl.RoundOver = true" >attack</button>
+                    <button class="border-solid bg-red-400 p-3 rounded-md mx-4 text-lg font-bold text-white duration-300 hover:bg-red-500" id="attack">attack</button>
                     <button class="border-solid duration-300 bg-blue-400 p-3 rounded-md text-lg font-bold text-white hover:bg-blue-500"
                     @click="" id="offense">offense</button>
                 </div>

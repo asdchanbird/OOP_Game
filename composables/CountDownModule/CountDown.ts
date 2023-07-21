@@ -11,6 +11,7 @@ export class CountDown {
                 resolve(OptionType.TimeOut)
                 clearTimeout(timeId)
             },time)
+            
             this.TimdId = timeId
 
             // 監聽器
